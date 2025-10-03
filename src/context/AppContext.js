@@ -1,5 +1,7 @@
 import { createContext, useState } from "react";    
 import {baseUrl} from "../baseUrl"  
+import { useNavigate } from "react-router-dom";
+
 
 export const AppContext = createContext();
 
@@ -9,12 +11,22 @@ export default function AppContextProvider({children}){
     const [posts, setPost] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(null);
+    const navigate = useNavigate();
+    
 
     // data filing pending
 
-    async function fetchBlockPost(page=1){
+    async function fetchBlockPost(page=1, tag=null, category, ){
         setLoading(true);
+        console.log("Url is")
+       
         let url = `${baseUrl}?page=${page}`
+        if(tag){
+            url += `&tag=${tag}`
+        }
+        if(category){
+            url += `&category=${category}`
+        }
         console.log("printing the final url")
         console.log(url)
         try{
@@ -35,8 +47,9 @@ export default function AppContextProvider({children}){
     }
 
     function handChangePage(page){
+        navigate({search: `?page=${page}`});
         setPage(page);
-        fetchBlockPost(page)
+       
     }
 
 
